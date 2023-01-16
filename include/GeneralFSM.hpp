@@ -16,9 +16,7 @@ namespace GFSM
     //class Transition;  //状态转换类 //由标准库中map代替 
     class StateManager;  //状态管理类
 
-
-
-
+    //以下为类的实现
     class StateManager//状态机（管理状态运行与转换）
     {
     public:
