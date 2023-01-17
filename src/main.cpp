@@ -1,86 +1,70 @@
+#include "../include/StateMachine.hpp"
+#include <memory>
 #include <iostream>
-#include "../include/GeneralFSM.hpp"
 
 using namespace std;
 using namespace GFSM;
-/*
-    测试代码源自https://toscode.gitee.com/andwp/cpp-state/blob/master/ConsoleApplication1/ConsoleApplication1.cpp
-*/
-int main()
+
+int main(int argc, char const *argv[])
 {
-    std::cout << "Hello World!\n";
-    int Exit = 0; // 退出。 
-    int Continue = 1; // 继续执行。
+    int Exit = 0;
+    int Continue = 1;
 
-    StateManager fsm;
+    StateMachine sm;
 
-    State* yellowToRedState = new State;  // （转红灯的）黄灯状态。
-    State* greenState = new State;  // 绿灯状态。
-    State* yellowToGreenState = new State;  // （转绿灯的）黄灯状态。
-    State* redState = new State;  // 红灯状态。
-    State* initState = new State;  // 初始状态。
-    State* finalState = new State;  // 关闭状态。
+    using sptr = shared_ptr<State>;
+    sptr initState = make_shared<State>();
+    sptr finalState = make_shared<State>();
+    sptr openState = make_shared<State>();
+    sptr closeState = make_shared<State>();
 
-    auto finalExec = []() {cout << "终止程序！" << endl; };
+    auto finalExec = [](){cout<<"程序终止"<<endl;};
     finalState->setExec(finalExec);
 
-    yellowToRedState->setEnter([]() {cout << "进入黄灯状态。" << endl; });
-    yellowToRedState->setExec([]() {cout << "Yellow (To Red ) Light Exec" << endl; });
-    yellowToRedState->setQuit([]() {cout << "退出黄灯状态。" << endl; });
-    yellowToRedState->addTransition(Continue, redState); //黄灯关闭，转为红灯。
-    yellowToRedState->addTransition(Exit, finalState); // 直接关闭，转为终止。
+    initState->setExec([]{cout<<"初始化"<<endl;});
+    initState->addTransition(Continue,openState);
+    initState->addTransition(Exit,closeState);
 
-    greenState->setEnter([]() { cout << "进入绿灯状态" << endl; });
-    greenState->setExec([]() { cout << "Green Light Exec" << endl; });
-    greenState->setQuit([]() { cout << "退出绿灯状态" << endl; });
-    greenState->addTransition(Continue, yellowToRedState);
-    greenState->addTransition(Exit, finalState); // 直接关闭，转为终止。
+    openState->setEnter([]{cout<<"灯正在打开"<<endl;});
+    openState->setExec([]{cout<<"灯已经打开"<<endl;});
+    openState->setExit([]{cout<<"有人关闭了开关"<<endl;});
+    openState->addTransition(Continue,closeState);
+    openState->addTransition(Exit,closeState);
 
-    yellowToGreenState->setEnter([]() { cout << "进入黄灯状态" << endl; });
-    yellowToGreenState->setExec([]() { cout << "Yellow (ToGreen ) Light Exec" << endl; });
-    yellowToGreenState->setQuit([]() { cout << "退出黄灯状态" << endl; });
-    yellowToGreenState->addTransition(Continue, greenState); //黄灯关闭，转为绿灯。
-    yellowToGreenState->addTransition(Exit, finalState); // 直接关闭，转为终止。
+    closeState->setEnter([]{cout<<"灯正在关闭"<<endl;});
+    closeState->setExec([]{cout<<"灯已经关闭"<<endl;});
+    closeState->setExit([]{cout<<"有人打开了开关"<<endl;});
+    closeState->addTransition(Continue,openState);
+    closeState->addTransition(Exit,closeState);
 
-    redState->setEnter([]() { cout << "进入红灯状态" << endl; });
-    redState->setExec([]() { cout << "Red Light Exec" << endl; });
-    redState->setQuit([]() { cout << "退出红灯状态" << endl; });
-    redState->addTransition(Continue, yellowToGreenState); // 红灯关闭，黄灯打开。
-    redState->addTransition(Exit, finalState); // 直接关闭，转为终止。
-     
-    initState->setExec([]() { cout << "InitState Exec" << endl; });
-    initState->addTransition(Continue, redState); // 初始后，切换为红灯。
-    initState->addTransition(Exit, finalState); // 直接关闭，转为终止。
+    sm.addState(initState);
+    sm.addState(finalState);
+    sm.addState(openState);
+    sm.addState(closeState);
 
-    fsm.addState(yellowToRedState);
-    fsm.addState(greenState);
-    fsm.addState(yellowToGreenState);
-    fsm.addState(redState);
-    fsm.addState(finalState);
-    fsm.addState(initState);
+    sm.initState(initState);
 
-    fsm.setInitState(initState);
-
-    if (fsm.start())
+    if (sm.start())
     {
         std::cout << "启动完毕。" << endl;
         // 切换到下一个。
-        fsm.doAction(Action(Continue)); 
-        fsm.doAction(Action(Continue)); 
-        fsm.doAction(Action(Continue));
-        fsm.doAction(Action(Continue));
-        fsm.doAction(Action(Continue));
-        fsm.doAction(Action(Continue));
-        fsm.doAction(Action(Continue));
-        fsm.doAction(Action(Continue));
-        fsm.doAction(Action(Continue));
-        fsm.doAction(Action(Continue));
+        sm.doAction(Action(Continue)); 
+        sm.doAction(Action(Continue)); 
+        sm.doAction(Action(Continue));
+        sm.doAction(Action(Continue));
+        sm.doAction(Action(Continue));
+        sm.doAction(Action(Continue));
+        sm.doAction(Action(Continue));
+        sm.doAction(Action(Continue));
+        sm.doAction(Action(Continue));
+        sm.doAction(Action(Continue));
         // 切换到终止。
-        fsm.doAction(Action(Exit));
+        sm.doAction(Action(Exit));
     }
     else
     {
         std::cout << " 启动状态机失败。";
     }
+    //system("pause");
     return 0;
 }

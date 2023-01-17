@@ -5,6 +5,8 @@
 
 namespace GFSM
 {
+    class State;
+
     class Transition
     {
     private:

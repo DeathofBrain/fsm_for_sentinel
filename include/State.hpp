@@ -37,7 +37,7 @@ namespace GFSM
 
         std::shared_ptr<State> doAction(const Action& e)
         {
-            std::shared_ptr<Transition> trans = nullptr;
+            std::shared_ptr<Transition> trans;
 
             for (auto it : _trans)
             {
@@ -47,7 +47,7 @@ namespace GFSM
                     break;
                 }
             }
-            std::shared_ptr<State> state = nullptr;
+            std::shared_ptr<State> state;
             if (trans)
             {
                 state = trans->getState();
@@ -56,7 +56,44 @@ namespace GFSM
         }
 
     public:
-        
+        void setEnter(std::function<void()> enter)
+        {
+            _enter = enter;
+        }
+
+        void setExec(std::function<void()> exec)
+        {
+            _exec = exec;
+        }
+
+        void setExit(std::function<void()> exit)
+        {
+            _exit = exit;
+        }
+
+        void onEnter()
+        {
+            if (_enter)
+            {
+                _enter();
+            }
+        }
+
+        void onExec()
+        {
+            if (_exec)
+            {
+                _exec();
+            }
+        }
+
+        void onExit()
+        {
+            if (_exit)
+            {
+                _exit();
+            }
+        }
     };
     
 
