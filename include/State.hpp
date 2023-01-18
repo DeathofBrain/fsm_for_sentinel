@@ -15,6 +15,7 @@ namespace GFSM
     {
     private:
         std::string _name;
+        bool _is_auto = false;
     private:
         std::vector<std::shared_ptr<Transition>> _trans;//此状态对应的信号——次态集合
         std::function<void()> _enter;
