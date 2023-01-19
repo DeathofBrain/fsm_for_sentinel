@@ -15,7 +15,7 @@ namespace GFSM
         StateMachine() = default;
         ~StateMachine() = default;
     public:
-        void addState(std::shared_ptr<State> state)
+        void addState(std::shared_ptr<State> state)//添加状态
         {
             if (state)
             {
@@ -24,12 +24,12 @@ namespace GFSM
             
         }
 
-        void initState(std::shared_ptr<State> state)
+        void initState(std::shared_ptr<State> state)//初始化状态机
         {
-            _currentState = state;
-            auto pair = state->getOptions();
-            _is_auto = pair.first;
-            _default_action = pair.second;
+            _currentState = state;//初始状态
+            // auto pair = state->getOptions();//以下：设定状态机的自动切换开关，默认次态
+            // _is_auto = pair.first;
+            // _default_action = pair.second;
         }
 
         void start()
@@ -39,7 +39,11 @@ namespace GFSM
                 return;
             }
             _currentState->onEnter();
-            _currentState->onExec();
+
+            auto options_tmp = _currentState->onExec();//TODO:让_exec返回int与bool（即pair），让状态自行决定是否自动运行
+            _is_auto = options_tmp.first;
+            _default_action = options_tmp.second;
+            
             if (_is_auto)
             {
                 this->doAction(_default_action);//自动切换状态
@@ -58,13 +62,17 @@ namespace GFSM
                 _currentState->onExit();
 
                 _currentState = state;
-                auto pair = state->getOptions();
-                _is_auto = pair.first;
-                _default_action = pair.second;
+                // auto pair = state->getOptions();
+                // _is_auto = pair.first;
+                // _default_action = pair.second;
 
                 _currentState->onEnter();
             }
-            _currentState->onExec();//无论状态是否切换，都会进行此时状态下的状态中函数
+
+            auto options_tmp = _currentState->onExec();//无论状态是否切换，都会进行此时状态下的状态中函数
+            _is_auto = options_tmp.first;
+            _default_action = options_tmp.second;
+            
             if (_is_auto)
             {
                 this->doAction(_default_action);
