@@ -34,7 +34,7 @@ int main(int argc, char const *argv[])
         });
     initState->addTransition(Continue,openState);
     initState->addTransition(Exit,closeState);
-    // initState->setOptions(true,Continue);
+
 
     openState->setEnter([]{cout<<"灯正在打开"<<endl;});
     openState->setExec([&]{
@@ -45,7 +45,7 @@ int main(int argc, char const *argv[])
     openState->setExit([]{cout<<"有人关闭了开关"<<endl;});
     openState->addTransition(Continue,closeState);
     openState->addTransition(Exit,finalState);
-    // openState->setOptions(true,Continue);
+
 
     closeState->setEnter([]{cout<<"灯正在关闭"<<endl;});
     closeState->setExec([&]{
@@ -72,6 +72,6 @@ int main(int argc, char const *argv[])
     sm.doAction(Exit);
     
 
-    //system("pause");
+
     return 0;
 }

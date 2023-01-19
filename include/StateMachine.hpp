@@ -27,9 +27,6 @@ namespace GFSM
         void initState(std::shared_ptr<State> state)//初始化状态机
         {
             _currentState = state;//初始状态
-            // auto pair = state->getOptions();//以下：设定状态机的自动切换开关，默认次态
-            // _is_auto = pair.first;
-            // _default_action = pair.second;
         }
 
         void start()
@@ -62,9 +59,6 @@ namespace GFSM
                 _currentState->onExit();
 
                 _currentState = state;
-                // auto pair = state->getOptions();
-                // _is_auto = pair.first;
-                // _default_action = pair.second;
 
                 _currentState->onEnter();
             }
