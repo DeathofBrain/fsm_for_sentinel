@@ -3,7 +3,7 @@
 namespace GFSM
 {
     //在这里定义信号
-    enum ACTIONS
+    enum Actions
     {
         OPEN = 0,
         CLOSE
