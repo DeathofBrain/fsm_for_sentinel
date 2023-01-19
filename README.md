@@ -5,6 +5,7 @@
 2. 添加开关，控制是否自动切换
 
 - TODO：
-  1. 让_exec返回int与bool（即pair），让状态自行决定是否自动运行（在State->onExec函数上）
+  1. 让_exec返回int与bool（即pair），让状态自行决定是否自动运行（在State->onExec函数上）*已完成*
      1. 优点：让状态自行决定，增强稳定性
      2. 缺点：每个exec函数必须含有pair返回值，略嫌麻烦（待改进）
+  2. 使用泛型，拒绝exec必须有pair返回值
