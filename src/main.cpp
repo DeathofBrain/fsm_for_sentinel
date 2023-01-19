@@ -26,12 +26,14 @@ int main(int argc, char const *argv[])
     initState->setExec([]{cout<<"初始化"<<endl;});
     initState->addTransition(Continue,openState);
     initState->addTransition(Exit,closeState);
+    initState->setOptions(true,Continue);
 
     openState->setEnter([]{cout<<"灯正在打开"<<endl;});
     openState->setExec([]{cout<<"灯已经打开"<<endl;});
     openState->setExit([]{cout<<"有人关闭了开关"<<endl;});
     openState->addTransition(Continue,closeState);
-    openState->addTransition(Exit,closeState);
+    openState->addTransition(Exit,finalState);
+    openState->setOptions(true,Continue);
 
     closeState->setEnter([]{cout<<"灯正在关闭"<<endl;});
     closeState->setExec([]{cout<<"灯已经关闭"<<endl;});
@@ -48,16 +50,8 @@ int main(int argc, char const *argv[])
 
     sm.start();
     // 切换到下一个。
-    sm.doAction(Continue); 
-    sm.doAction(Continue); 
-    sm.doAction(Continue);
-    sm.doAction(Continue);
-    sm.doAction(Continue);
-    sm.doAction(Continue);
-    sm.doAction(Continue);
-    sm.doAction(Continue);
-    sm.doAction(Continue);
-    sm.doAction(Continue);
+    //sm.doAction(Continue);
+
     // 切换到终止。
     sm.doAction(Exit);
     
