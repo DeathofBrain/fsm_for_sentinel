@@ -8,4 +8,6 @@
   1. 让_exec返回int与bool（即pair），让状态自行决定是否自动运行（在State->onExec函数上）*已完成*
      1. 优点：让状态自行决定，增强稳定性
      2. 缺点：每个exec函数必须含有pair返回值，略嫌麻烦（待改进）
-  2. 解决exec必须有pair返回值的问题（不想解决）
+  2. 解决exec必须有pair返回值的问题 *已完成*
+     1. 方法：通过在State类中新增无返回值函数api（setExecNoReturn()）
+   
