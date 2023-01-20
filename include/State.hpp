@@ -17,26 +17,26 @@ namespace GFSM
         std::string _name;//用于后期确认状态是否符合预期
     private:
         std::vector<std::shared_ptr<Transition>> _trans;//此状态对应的信号——次态集合
-        std::function<void()> _enter;
-        std::function<std::pair<bool,int>()> _exec;
-        std::function<void()> _exec_no_return;
-        std::function<void()> _exit;
+        std::function<void()> _enter;//进入状态回调函数
+        std::function<std::pair<bool,int>()> _exec;//含options的状态中回调函数
+        std::function<void()> _exec_no_return;//不含options的状态中回调函数
+        std::function<void()> _exit;//退出状态时调用的回调函数
     public:
         State() = default;
-        State(const std::string& name):_name(name){}
+        State(const std::string& name):_name(name){}//用于后期确认状态是否符合预期
         ~State() = default;
         std::string getName() const
         {
             return _name;
         }
     public:
-        void addTransition(const int& type, std::shared_ptr<State> dest)
+        void addTransition(const int& type, std::shared_ptr<State> dest)//添加信号——次态关系
         {
             std::shared_ptr<Transition> transition = std::make_shared<Transition>(type,dest);
             _trans.push_back(transition);
         }
 
-        std::shared_ptr<State> doAction(const int& e)
+        std::shared_ptr<State> doAction(const int& e)//提供给状态机的api函数，用于找出信号e下的次态并返回给状态机
         {
             std::shared_ptr<Transition> trans;
 
@@ -56,16 +56,16 @@ namespace GFSM
             return state;
         }
 
-    public:
+    public://set，get环节
         void setEnter(std::function<void()> enter)//感觉没啥必要
         {
             _enter = enter;
         }
 
-        void setExec(std::function<std::pair<bool,int>()> exec)
+        void setExec(std::function<std::pair<bool,int>()> exec)//含有返回值的回调函数
         {
 
-            if (_exec_no_return)
+            if (_exec_no_return)//检测是否重复定义exec函数
             {
                 cout<<"不可重复定义exec函数"<<endl;
                 return;
@@ -77,7 +77,7 @@ namespace GFSM
         void setExecNoReturn(std::function<void()> exec)
         {
 
-            if (_exec)
+            if (_exec)//检测是否重复定义exec函数
             {
                 cout<<"不可重复定义exec函数"<<endl;
                 return;
@@ -100,7 +100,7 @@ namespace GFSM
             }
         }
 
-        std::pair<bool,int> onExec()//TODO:让_exec返回int与bool（即pair），让状态自行决定是否自动运行
+        std::pair<bool,int> onExec()
         {
 
             if (_exec)//含有返回值
