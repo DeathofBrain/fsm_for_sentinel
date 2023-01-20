@@ -19,6 +19,7 @@ namespace GFSM
         std::vector<std::shared_ptr<Transition>> _trans;//此状态对应的信号——次态集合
         std::function<void()> _enter;
         std::function<std::pair<bool,int>()> _exec;
+        std::function<void()> _exec_no_return;
         std::function<void()> _exit;
     public:
         State() = default;
@@ -63,7 +64,27 @@ namespace GFSM
 
         void setExec(std::function<std::pair<bool,int>()> exec)
         {
+
+            if (_exec_no_return)
+            {
+                cout<<"不可重复定义exec函数"<<endl;
+                return;
+            }
+            
             _exec = exec;
+        }
+
+        void setExecNoReturn(std::function<void()> exec)
+        {
+
+            if (_exec)
+            {
+                cout<<"不可重复定义exec函数"<<endl;
+                return;
+            }
+
+
+            _exec_no_return = exec;
         }
 
         void setExit(std::function<void()> exit)//同enter，真没啥必要，顶多去cout一下表示状态已经退出
@@ -81,11 +102,20 @@ namespace GFSM
 
         std::pair<bool,int> onExec()//TODO:让_exec返回int与bool（即pair），让状态自行决定是否自动运行
         {
-            if (_exec)
+
+            if (_exec)//含有返回值
             {
                 auto tmp = _exec();
                 return tmp;
             }
+
+            if (_exec_no_return)//不含返回值
+            {
+                _exec_no_return();
+                auto tmp = make_pair(false,Actions::NO_DEFAULT_ACTION);
+                return tmp;
+            }
+            
 
         }
 
