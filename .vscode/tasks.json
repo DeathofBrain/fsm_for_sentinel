@@ -6,6 +6,7 @@
             "command": "C:\\MinGW\\bin\\g++.exe",
             "args": [
                 "-fdiagnostics-color=always",
+                "-O3",
                 "-g",
                 "${file}",
                 "-o",
