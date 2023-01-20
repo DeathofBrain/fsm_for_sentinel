@@ -1,8 +1,10 @@
 #pragma once
 //状态类
 #include "./Transition.hpp"
+#include "./Actions.hpp"
 
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <functional>
@@ -67,7 +69,7 @@ namespace GFSM
 
             if (_exec_no_return)//检测是否重复定义exec函数
             {
-                cout<<"不可重复定义exec函数"<<endl;
+                std::cout<<"不可重复定义exec函数"<<std::endl;
                 return;
             }
             
@@ -79,7 +81,7 @@ namespace GFSM
 
             if (_exec)//检测是否重复定义exec函数
             {
-                cout<<"不可重复定义exec函数"<<endl;
+                std::cout<<"不可重复定义exec函数"<<std::endl;
                 return;
             }
 
@@ -112,7 +114,7 @@ namespace GFSM
             if (_exec_no_return)//不含返回值
             {
                 _exec_no_return();
-                auto tmp = make_pair(false,Actions::NO_DEFAULT_ACTION);
+                auto tmp = std::make_pair(false,Actions::NO_DEFAULT_ACTION);
                 return tmp;
             }
             

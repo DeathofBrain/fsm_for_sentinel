@@ -22,10 +22,8 @@ int main(int argc, char const *argv[])
 
     auto finalExec = [](){
             cout<<"程序终止"<<endl;
-            pair<bool,int> ret = make_pair(false,Actions::NO_DEFAULT_ACTION);
-            return ret;
         };
-    finalState->setExec(finalExec);
+    finalState->setExecNoReturn(finalExec);
 
     initState->setExec([&]{
             cout<<"初始化"<<endl;
@@ -48,10 +46,8 @@ int main(int argc, char const *argv[])
 
 
     closeState->setEnter([]{cout<<"灯正在关闭"<<endl;});
-    closeState->setExec([&]{
+    closeState->setExecNoReturn([&]{
             cout<<"灯已经关闭"<<endl;
-            pair<bool,int> ret = make_pair(false,Continue);
-            return ret; 
         });
     closeState->setExit([]{cout<<"有人打开了开关"<<endl;});
     closeState->addTransition(Continue,openState);
