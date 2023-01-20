@@ -1,16 +1,36 @@
 #pragma once
 
-#include "State.hpp"
-
+#include "./State.hpp"
+#include "./Actions.hpp"
 namespace GFSM
 {
+    /**
+     * @brief 状态机类
+     * 
+     */
     class StateMachine
     {
     private:
+        /**
+         * @brief 存储状态的动态数组
+         * 
+         */
         std::vector<std::shared_ptr<State>> _states;
+        /**
+         * @brief 状态机当前状态
+         * 
+         */
         std::shared_ptr<State> _currentState = nullptr;
-        bool _is_auto = false;//自动切换开关，理论上应当由*状态*自行控制
-        int _default_action = -1;//默认为-1，即没有默认信号，理论上应当由*状态*自行控制
+        /**
+         * @brief 自动切换开关，理论上应当由*状态*自行控制
+         * 
+         */
+        bool _is_auto = false;
+        /**
+         * @brief 自动切换时自动传递的信号，由状态自行控制，默认为无动作(-1)
+         * 
+         */
+        int _default_action = Actions::NO_DEFAULT_ACTION;
     public:
         StateMachine() = default;
         ~StateMachine() = default;

@@ -10,8 +10,17 @@ namespace GFSM
     class Transition
     {
     private:
-        int _type;//触发标志位
-        std::shared_ptr<State> _state;//对应次态
+        /**
+         * @brief 信号
+         * 
+         */
+        int _type;
+        
+        /**
+         * @brief 对应次态
+         * 
+         */
+        std::shared_ptr<State> _state;
     public:
         Transition():_state(nullptr){}
         Transition(const int& type, std::shared_ptr<State> state):_type(type),_state(state){}

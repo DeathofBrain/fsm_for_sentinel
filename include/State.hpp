@@ -1,5 +1,9 @@
 #pragma once
-//状态类
+/**
+ * @file State.hpp
+ * @brief 状态类
+ * @copyright Copyright (c) 2023
+ */
 #include "./Transition.hpp"
 #include "./Actions.hpp"
 
@@ -13,32 +17,87 @@
 
 namespace GFSM
 {
+    /**
+     * @brief 状态类
+     * 
+     */
     class State
     {
     private:
-        std::string _name;//用于后期确认状态是否符合预期
+        /**
+         * @brief 用于后期确认状态是否符合预期
+         * 
+         */
+        std::string _name;
     private:
-        std::vector<std::shared_ptr<Transition>> _trans;//此状态对应的信号——次态集合
-        std::function<void()> _enter;//进入状态回调函数
-        std::function<std::pair<bool,int>()> _exec;//含options的状态中回调函数
-        std::function<void()> _exec_no_return;//不含options的状态中回调函数
-        std::function<void()> _exit;//退出状态时调用的回调函数
+        /**
+         * @brief 此状态对应的信号——次态集合
+         * 
+         */
+        std::vector<std::shared_ptr<Transition>> _trans;
+
+        /**
+         * @brief 进入状态时的回调函数
+         * 
+         */
+        std::function<void()> _enter;
+
+        /**
+         * @brief 含options的状态中回调函数
+         * 
+         */
+        std::function<std::pair<bool,int>()> _exec;
+
+        /**
+         * @brief 不含options的状态中回调函数
+         * 
+         */
+        std::function<void()> _exec_no_return;
+
+        /**
+         * @brief 退出状态时调用的回调函数
+         * 
+         */
+        std::function<void()> _exit;
     public:
         State() = default;
-        State(const std::string& name):_name(name){}//用于后期确认状态是否符合预期
+        /**
+         * @brief 用于后期确认状态是否符合预期
+         * 
+         * @param name 状态名称
+         */
+        State(const std::string& name):_name(name){}
         ~State() = default;
+
+        /**
+         * @brief 获取状态名字
+         * 
+         * @return std::string 返回名称
+         */
         std::string getName() const
         {
             return _name;
         }
     public:
-        void addTransition(const int& type, std::shared_ptr<State> dest)//添加信号——次态关系
+        /**
+         * @brief 添加信号——次态关系
+         * 
+         * @param type 信号(在Actions中定义)
+         * @param dest 信号对应次态
+         */
+        void addTransition(const int& type, std::shared_ptr<State> dest)
         {
             std::shared_ptr<Transition> transition = std::make_shared<Transition>(type,dest);
             _trans.push_back(transition);
         }
 
-        std::shared_ptr<State> doAction(const int& e)//提供给状态机的api函数，用于找出信号e下的次态并返回给状态机
+        /**
+         * @brief 提供给状态机的api函数，用于找出信号e下的次态并返回给状态机
+         * 
+         * @param e 信号
+         * @return std::shared_ptr<State> 次态(指针)
+         */
+        std::shared_ptr<State> doAction(const int& e)
         {
             std::shared_ptr<Transition> trans;
 
@@ -58,13 +117,18 @@ namespace GFSM
             return state;
         }
 
-    public://set，get环节
+    public:
         void setEnter(std::function<void()> enter)//感觉没啥必要
         {
             _enter = enter;
         }
 
-        void setExec(std::function<std::pair<bool,int>()> exec)//含有返回值的回调函数
+        /**
+         * @brief 设置含有options返回值的回调函数
+         * 
+         * @param exec pair<bool,int>型函数指针
+         */
+        void setExec(std::function<std::pair<bool,int>()> exec)
         {
 
             if (_exec_no_return)//检测是否重复定义exec函数
@@ -76,6 +140,11 @@ namespace GFSM
             _exec = exec;
         }
 
+        /**
+         * @brief 设置不含有options返回值的回调函数
+         * 
+         * @param exec void型函数指针
+         */
         void setExecNoReturn(std::function<void()> exec)
         {
 
@@ -88,7 +157,7 @@ namespace GFSM
 
             _exec_no_return = exec;
         }
-
+        
         void setExit(std::function<void()> exit)//同enter，真没啥必要，顶多去cout一下表示状态已经退出
         {
             _exit = exit;
