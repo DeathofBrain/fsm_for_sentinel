@@ -10,4 +10,4 @@
      2. 缺点：每个exec函数必须含有pair返回值，略嫌麻烦（待改进）
   2. 解决exec必须有pair返回值的问题 *已完成*
      1. 方法：通过在State类中新增无返回值函数api（setExecNoReturn()）
-   
+  3. 重写README，发布1.0版本（谁过年加班阿）
