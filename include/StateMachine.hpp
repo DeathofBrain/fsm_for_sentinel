@@ -35,20 +35,57 @@ namespace GFSM
         StateMachine() = default;
         ~StateMachine() = default;
     public:
-        void addState(std::shared_ptr<State> state)//添加状态
+        /**
+         * @brief 状态机添加状态(共享指针形式)
+         * 
+         * @param state 单一状态
+         */
+        void addState(std::shared_ptr<State> state)
         {
             if (state)
             {
                 _states.push_back(state);
             }
-            
         }
-
-        void initState(std::shared_ptr<State> state)//初始化状态机
+        /**
+         * @brief 状态机添加状态（vector形式）
+         * 
+         * @param states 存储状态的vector数组
+         * @param _append true:在原有基础上后继添加（默认）false:覆盖 
+         */
+        void addState(std::vector<std::shared_ptr<State>> states, bool _append = true)
+        {
+            if(_append)//如果为后继
+            {
+                _states.insert(_states.end(),states.begin(),states.end());
+                return;
+            }
+            _states.clear();
+            _states = states;//直接替换
+            return;
+        }
+        /**
+         * @brief 初始化状态机
+         * 
+         * @param state 初始状态
+         */
+        void initState(std::shared_ptr<State> state)
         {
             _currentState = state;//初始状态
         }
-
+        /**
+         * @brief 初始化状态机
+         * 
+         * @param pos 指针向量中对应下标的状态
+         */
+        void initState(int pos = 0)
+        {
+            _currentState = _states[pos];
+        }
+        /**
+         * @brief 启动状态机
+         * 
+         */
         void start()
         {
             if(!_currentState)
@@ -57,7 +94,7 @@ namespace GFSM
             }
             _currentState->onEnter();
 
-            auto options_tmp = _currentState->onExec();//TODO:让_exec返回int与bool（即pair），让状态自行决定是否自动运行
+            auto options_tmp = _currentState->onExec();
             _is_auto = options_tmp.first;
             _default_action = options_tmp.second;
             
