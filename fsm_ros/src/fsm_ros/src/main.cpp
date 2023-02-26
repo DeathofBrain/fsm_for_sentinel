@@ -8,10 +8,10 @@ using namespace std;
 using namespace GFSM;
 using sptr = shared_ptr<State>;
 
-void do_msg(const std_msgs::String::ConstPtr& msg_p, StateMachine& sm)
+void do_msg(const std_msgs::String::ConstPtr& msg_p, StateMachine& sm, sptr state)
 {
     ROS_INFO("%s",msg_p->data.c_str());
-    sm.doAction(1);
+    sm.doAction(state);
 }
 
 
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     sm.start();
 
 
-    ros::Subscriber sub = nh.subscribe<std_msgs::String>("state_mac_node",10,boost::bind(do_msg,_1,std::ref(sm)));
+    ros::Subscriber sub = nh.subscribe<std_msgs::String>("state_mac_node",10,boost::bind(do_msg,_1,std::ref(sm),finalState));
     ros::spin();
     return 0;
 }
