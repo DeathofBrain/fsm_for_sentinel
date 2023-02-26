@@ -180,12 +180,11 @@ namespace GFSM
                 return tmp;
             }
 
-            if (_exec_no_return)//不含返回值
-            {
-                _exec_no_return();
-                auto tmp = std::make_pair(false,Actions::NO_DEFAULT_ACTION);
-                return tmp;
-            }
+            //不含有返回值
+            _exec_no_return();
+            auto tmp = std::make_pair(false,Actions::NO_DEFAULT_ACTION);
+            return tmp;
+
         }
 
         void onExit()//同enter，真没啥必要，顶多去cout一下表示状态已经退出

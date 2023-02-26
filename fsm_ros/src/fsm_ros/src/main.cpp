@@ -10,7 +10,8 @@ int main(int argc, char *argv[])
 {
     ros::init(argc,argv,"test_node");
     ROS_INFO("HELLO");
-        int Exit = 0;
+
+    int Exit = 0;
     int Continue = 1;
 
     StateMachine sm;
