@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/azuki/state_mac/fsm_for_sentinel/fsm_ros/devel/setup.sh
