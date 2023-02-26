@@ -103,7 +103,11 @@ namespace GFSM
                 this->doAction(_default_action);//自动切换状态
             }
         }
-
+        /**
+         * @brief 进行状态切换
+         * 
+         * @param e 动作（具体在->Actions.hpp）
+         */
         void doAction(const int& e)//在这里进行状态切换
         {
             auto state = _currentState->doAction(e);
@@ -111,19 +115,21 @@ namespace GFSM
             {
                 return;
             }
-            if (_currentState != state)//当状态切换时
+            
+            //当状态切换时
+            if (_currentState != state)
             {
                 _currentState->onExit();
-
                 _currentState = state;
-
                 _currentState->onEnter();
             }
 
-            auto options_tmp = _currentState->onExec();//无论状态是否切换，都会进行此时状态下的状态中函数
+            //无论状态是否切换，都会进行此时状态下的状态中函数
+            auto options_tmp = _currentState->onExec();
             _is_auto = options_tmp.first;
             _default_action = options_tmp.second;
-            
+
+            //如果自动切换
             if (_is_auto)
             {
                 this->doAction(_default_action);
