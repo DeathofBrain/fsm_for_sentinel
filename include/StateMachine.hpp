@@ -6,6 +6,7 @@ namespace GFSM
 {
     /**
      * @brief 状态机类
+     * @brief 这里定义外部可调用的函数，不建议外部直接调用state的函数
      * 
      */
     class StateMachine
@@ -115,7 +116,7 @@ namespace GFSM
             {
                 return;
             }
-            
+
             //当状态切换时
             if (_currentState != state)
             {
@@ -135,12 +136,71 @@ namespace GFSM
                 this->doAction(_default_action);
             }
         }
-    public:
-        static void changeMode(StateMachine& sm,const bool& is_auto)//留了个开关api,后门
+        /**
+         * @brief 进行状态切换（手动）
+         * 
+         * @param state 切换到的状态
+         */
+        void doAction(std::shared_ptr<State> state)
         {
-            sm._is_auto = is_auto;
-        }
+            //切换状态
+            _currentState->onExit();
+            _currentState = state;
+            _currentState->onEnter();
 
+            //进行此时状态下的状态中函数
+            auto options_tmp = _currentState->onExec();
+            _is_auto = options_tmp.first;
+            _default_action = options_tmp.second;
+
+            //如果自动切换（由state定义）
+            if (_is_auto)
+            {
+                this->doAction(_default_action);
+            }
+        }
+        /**
+         * @brief 进行状态切换（手动）（含对自动切换的处理）
+         * 
+         * @param state 切换到的状态
+         * @param is_auto 在这之后是否自动切换(默认为否)
+         */
+        void doAction(std::shared_ptr<State> state, bool is_auto)
+        {
+            //切换状态
+            _currentState->onExit();
+            _currentState = state;
+            _currentState->onEnter();
+
+            //进行此时状态下的状态中函数
+            _currentState->onExec();
+
+            //如果自动切换（手动定义）
+            if (is_auto)
+            {
+                this->doAction(_default_action);
+            }
+        }
+        /**
+         * @brief 改变当前状态机对应状态
+         * 
+         * @param state 状态
+         */
+        void changeState(std::shared_ptr<State> state)
+        {
+            this->doAction(state);
+        }
+        /**
+         * @brief 改变当前状态机对应状态
+         * 
+         * @param state 状态
+         * @param is_auto 是否为自动切换（由外部定义）
+         */
+        void changeState(std::shared_ptr<State> state,bool is_auto)
+        {
+            this->doAction(state,is_auto);
+        }
+    public:
         static void changeDefaultAction(StateMachine& sm,const int& action)//后门
         {
             sm._default_action = action;
