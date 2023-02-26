@@ -206,7 +206,4 @@ namespace GFSM
             sm._default_action = action;
         }
     };
-    
-
-    
 } // namespace GFSM
