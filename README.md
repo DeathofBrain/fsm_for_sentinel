@@ -6,3 +6,5 @@
 3. 添加可由外部定义下一状态的api
 4. 让_exec返回int与bool（即pair）或void，让状态自行决定是否自动运行（在State->onExec函数上）
 
+- TODO
+    初始化state太答辩了，优化初始化过程
