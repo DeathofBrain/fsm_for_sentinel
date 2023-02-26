@@ -1,0 +1,8 @@
+prefix=/home/azuki/state_mac/fsm_for_sentinel/fsm_ros/devel
+
+Name: send_msgs
+Description: Description of send_msgs
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

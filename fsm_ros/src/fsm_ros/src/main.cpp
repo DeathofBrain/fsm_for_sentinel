@@ -1,72 +1,68 @@
 #include "../include/fsm_ros/StateMachine.hpp"
 #include "../include/fsm_ros/Actions.hpp"
 #include "ros/ros.h"
+#include "std_msgs/String.h"
 #include <memory>
 
 using namespace std;
 using namespace GFSM;
+using sptr = shared_ptr<State>;
+
+void do_msg(const std_msgs::String::ConstPtr& msg_p, StateMachine& sm)
+{
+    ROS_INFO("%s",msg_p->data.c_str());
+    sm.doAction(1);
+}
+
 
 int main(int argc, char *argv[])
 {
-    ros::init(argc,argv,"test_node");
+    ros::init(argc,argv,"state_mac_node");
+    ros::NodeHandle nh;
     ROS_INFO("HELLO");
 
     int Exit = 0;
     int Continue = 1;
 
-    StateMachine sm;
 
-    using sptr = shared_ptr<State>;
+    //init states
+    StateMachine sm;
     sptr initState = make_shared<State>();
     sptr finalState = make_shared<State>();
-    sptr openState = make_shared<State>();
-    sptr closeState = make_shared<State>();
 
-    auto finalExec = [](){
-            cout<<"程序终止"<<endl;
-        };
-    finalState->setExecNoReturn(finalExec);
-
+    initState->setEnter([&]{
+        ROS_INFO("我是状态1enter");
+    });
     initState->setExec([&]{
-            cout<<"初始化"<<endl;
-            pair<bool,int> ret = make_pair(true,Continue);
-            return ret;
-        });
-    initState->addTransition(Continue,openState);
-    initState->addTransition(Exit,closeState);
+        ROS_INFO("我是状态1exec");
+        return make_pair(false,Continue);
+    });
+    initState->setExit([&]{
+        ROS_INFO("我是状态1exit");
+    });
+    initState->addTransition(Continue,finalState);
 
-
-    openState->setEnter([]{cout<<"灯正在打开"<<endl;});
-    openState->setExec([&]{
-            cout<<"灯已经打开"<<endl;
-            pair<bool,int> ret = make_pair(true,Continue);
-            return ret;            
-        });
-    openState->setExit([]{cout<<"有人关闭了开关"<<endl;});
-    openState->addTransition(Continue,closeState);
-    openState->addTransition(Exit,finalState);
-
-
-    closeState->setEnter([]{cout<<"灯正在关闭"<<endl;});
-    closeState->setExecNoReturn([&]{
-            cout<<"灯已经关闭"<<endl;
-        });
-    closeState->setExit([]{cout<<"有人打开了开关"<<endl;});
-    closeState->addTransition(Continue,openState);
-    closeState->addTransition(Exit,finalState);
-
+    finalState->setEnter([&]{
+        ROS_INFO("我是状态2enter");
+    });
+    finalState->setExec([&]{
+        ROS_INFO("我是状态2exec");
+        return make_pair(false,Continue);
+    });
+    finalState->setExit([&]{
+        ROS_INFO("我是状态2exit");
+    });
+    finalState->addTransition(Continue,finalState);
+    
     sm.addState(initState);
     sm.addState(finalState);
-    sm.addState(openState);
-    sm.addState(closeState);
 
     sm.initState(initState);
 
     sm.start();
-    // 切换到下一个。
-    //sm.doAction(Continue);
 
-    // 切换到终止。
-    sm.doAction(Exit);
+
+    ros::Subscriber sub = nh.subscribe<std_msgs::String>("state_mac_node",10,boost::bind(do_msg,_1,std::ref(sm)));
+    ros::spin();
     return 0;
 }
