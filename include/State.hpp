@@ -186,8 +186,6 @@ namespace GFSM
                 auto tmp = std::make_pair(false,Actions::NO_DEFAULT_ACTION);
                 return tmp;
             }
-            
-
         }
 
         void onExit()//同enter，真没啥必要，顶多去cout一下表示状态已经退出
