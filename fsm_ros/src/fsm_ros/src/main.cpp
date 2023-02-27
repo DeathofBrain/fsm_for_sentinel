@@ -17,6 +17,7 @@ void do_msg(const std_msgs::String::ConstPtr& msg_p, StateMachine& sm, sptr stat
 
 int main(int argc, char *argv[])
 {
+    setlocale(LC_ALL,"");
     ros::init(argc,argv,"state_mac_node");
     ros::NodeHandle nh;
     ROS_INFO("HELLO");
