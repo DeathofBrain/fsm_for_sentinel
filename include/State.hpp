@@ -15,6 +15,7 @@
 #include <memory>
 
 
+/// @brief 
 namespace GFSM
 {
     /**
@@ -194,6 +195,20 @@ namespace GFSM
             {
                 _exit();
             }
+        }
+    public:
+        /**
+         * @brief 初始化状态函数
+         * 
+         * @param enter 进入状态时的回调函数
+         * @param exec 保持状态时的回调函数（pair型）
+         * @param exit 退出状态时的回调函数
+         */
+        void initState(std::function<void()> enter,std::function<std::pair<bool,int>()> exec,std::function<void()> exit)
+        {
+            this->setEnter(enter);
+            this->setExec(exec);
+            this->setExit(exit);
         }
     };
     
