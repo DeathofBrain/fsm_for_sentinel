@@ -91,7 +91,6 @@ namespace GFSM
             std::shared_ptr<Transition> transition = std::make_shared<Transition>(type,dest);
             _trans.push_back(transition);
         }
-
         /**
          * @brief 提供给状态机的api函数，用于找出信号e下的次态并返回给状态机
          * 
@@ -164,7 +163,7 @@ namespace GFSM
             _exit = exit;
         }
 
-        void onEnter()//感觉没啥必要
+        void onEnter()
         {
             if (_enter)
             {
@@ -189,7 +188,7 @@ namespace GFSM
             }
         }
 
-        void onExit()//同enter，真没啥必要，顶多去cout一下表示状态已经退出
+        void onExit()
         {
             if (_exit)
             {
