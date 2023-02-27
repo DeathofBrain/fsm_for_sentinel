@@ -1,5 +1,5 @@
-#include "../include/fsm_ros/StateMachine.hpp"
-#include "../include/fsm_ros/Actions.hpp"
+#include "../include/fsm_ros/fsm_base/StateMachine.hpp"
+#include "../include/fsm_ros/fsm_base/Actions.hpp"
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include <memory>
